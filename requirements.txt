@@ -1,0 +1,8 @@
+torch 
+peft
+bitsandbytes
+transformers
+trl
+accelerate
+pyter3
+nltk
