@@ -45,8 +45,7 @@ class Llama_Tuner():
         self.base_model = AutoModelForCausalLM.from_pretrained(
             model_name,
             quantization_config=quant_config,
-            device_map={"": 0},
-            max_length=512,
+            device_map={"": 0}
         )
 
         self.base_model.config.use_cache = False
@@ -82,28 +81,22 @@ class Llama_Tuner():
             remove_unused_columns = train_config['remove_unused_columns']
         )
     
-    
     def tune_and_save(self, train_dataset, save_name: str):
         self.save_name = save_name
 
-        self.llama_tokenizer = AutoTokenizer.from_pretrained(self.model_name, trust_remote_code=True,model_max_length=512)
+        self.llama_tokenizer = AutoTokenizer.from_pretrained(self.model_name, trust_remote_code=True)
         self.llama_tokenizer.pad_token = self.llama_tokenizer.eos_token
         self.llama_tokenizer.padding_side = "right"
 
-        # Tokenize and batch the dataset
-        train_dataset = train_dataset.map(
-            lambda examples: self.llama_tokenizer(examples["text"], padding="max_length", truncation=True),
-            batched=True
-        )
-
         self.tuner = SFTTrainer(
-            model=self.base_model,
-            train_dataset=train_dataset,
-            peft_config=self.peft_parameters,
-            max_seq_length=512, 
-            tokenizer=self.llama_tokenizer,
-            args=self.train_params,
-            packing=False 
+            model = self.base_model,
+            train_dataset = train_dataset,
+            peft_config = self.peft_parameters,
+            dataset_text_field = "text",
+            max_seq_length = None,
+            tokenizer = self.llama_tokenizer,
+            args = self.train_params,
+            packing=False
         )
 
         self.tuner.train()
