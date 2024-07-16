@@ -85,7 +85,8 @@ class Llama_Tuner():
     def tune_and_save(self, train_dataset, save_name: str):
         self.save_name = save_name
 
-        self.llama_tokenizer = AutoTokenizer.from_pretrained(self.model_name, trust_remote_code=True)
+        self.llama_tokenizer = AutoTokenizer.from_pretrained(self.model_name, trust_remote_code=True,
+                                                             use_fast=True, model_max_length=1024)
         self.llama_tokenizer.pad_token = self.llama_tokenizer.eos_token
         self.llama_tokenizer.padding_side = "right"
 
