@@ -1,0 +1,1 @@
+Fine-tuning essentially involves taking a pre-trained LLM, already equipped with a vast understanding of language, and further training it on a targeted dataset. These dataset can come from any domain, for instance healthcare, finance and legal.
