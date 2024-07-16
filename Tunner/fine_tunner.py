@@ -45,7 +45,8 @@ class Llama_Tuner():
         self.base_model = AutoModelForCausalLM.from_pretrained(
             model_name,
             quantization_config=quant_config,
-            device_map={"": 0}
+            device_map={"": 0},
+            max_length=512,
         )
 
         self.base_model.config.use_cache = False
@@ -85,8 +86,7 @@ class Llama_Tuner():
     def tune_and_save(self, train_dataset, save_name: str):
         self.save_name = save_name
 
-        self.llama_tokenizer = AutoTokenizer.from_pretrained(self.model_name, trust_remote_code=True,
-                                                             use_fast=True, model_max_length=1024)
+        self.llama_tokenizer = AutoTokenizer.from_pretrained(self.model_name, trust_remote_code=True,model_max_length=512)
         self.llama_tokenizer.pad_token = self.llama_tokenizer.eos_token
         self.llama_tokenizer.padding_side = "right"
 
@@ -100,7 +100,7 @@ class Llama_Tuner():
             model=self.base_model,
             train_dataset=train_dataset,
             peft_config=self.peft_parameters,
-            max_seq_length=1024, 
+            max_seq_length=512, 
             tokenizer=self.llama_tokenizer,
             args=self.train_params,
             packing=False 
